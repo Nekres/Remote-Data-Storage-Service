@@ -9,6 +9,8 @@ package com.nekres.rm.dao;
  *
  * @author nekres
  */
-public class ClientDao {
+public class UserProfileDao {
+    
+    //private SessionF
     
 }

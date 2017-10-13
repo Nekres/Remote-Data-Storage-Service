@@ -9,7 +9,7 @@ package com.nekres.rm.pojo;
  *
  * @author nekres
  */
-public class Client {
+public class UserProfile {
     
     private String email;
     
@@ -17,17 +17,17 @@ public class Client {
     
     private String storageId;
     
-    private String mountPoint;
-
-    public Client() {
+    private String storageKey; //used to get access to user storage
+    
+    public UserProfile() {
+        
     }
-    
-    
-    public Client(String email, String password, String storageId, String mountPoint) {
+
+    public UserProfile(String email, String password, String storageId, String storageKey) {
         this.email = email;
         this.password = password;
         this.storageId = storageId;
-        this.mountPoint = mountPoint;
+        this.storageKey = storageKey;
     }
     
     
@@ -55,13 +55,13 @@ public class Client {
         this.storageId = storageId;
     }
 
-    public String getMountPoint() {
-        return mountPoint;
+    public String getStorageKey() {
+        return storageKey;
     }
 
-    public void setMountPoint(String mountPoint) {
-        this.mountPoint = mountPoint;
+    public void setStorageKey(String storageKey) {
+        this.storageKey = storageKey;
     }
-    
+
     
 }
