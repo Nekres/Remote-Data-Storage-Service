@@ -5,18 +5,32 @@
  */
 package com.nekres.rm.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 /**
  *
  * @author nekres
  */
+@Entity
+@Table
 public class UserProfile {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int userId;
     
     private String email;
     
     private String password;
     
     private String storageId;
-    
+    @Column(unique = true)
     private String storageKey; //used to get access to user storage
     
     public UserProfile() {
@@ -63,10 +77,19 @@ public class UserProfile {
         this.storageKey = storageKey;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
-        return "UserProfile{" + "email=" + email + ", password=" + password + ", storageId=" + storageId + ", storageKey=" + storageKey + '}';
+        return "UserProfile{" + "userId=" + userId + ", email=" + email + ", password=" + password + ", storageId=" + storageId + ", storageKey=" + storageKey + '}';
     }
+
     
     
 }

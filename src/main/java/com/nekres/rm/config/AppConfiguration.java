@@ -17,7 +17,9 @@ import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
@@ -26,35 +28,43 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @Configuration
 @EnableWebMvc
+@EnableTransactionManagement
 @PropertySource("classpath:database.properties")
 @ComponentScan(basePackages = {"com.nekres.rm"})
 public class AppConfiguration {
-    
+
     @Autowired
     private Environment environment;
-    
+
     @Bean
-    public LocalSessionFactoryBean getSessionFactory(){
+    public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(getDataSource());
-        
+
         Properties properties = new Properties();
         properties.put("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
         properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
-        
+
         factoryBean.setHibernateProperties(properties);
-        factoryBean.setAnnotatedClasses(UserProfile.class,UserStorage.class);
+        factoryBean.setAnnotatedClasses(UserProfile.class, UserStorage.class);
         return factoryBean;
     }
-    
+
     @Bean
-    public DataSource getDataSource(){
+    public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(environment.getProperty("database.driver"));
         dataSource.setUrl(environment.getProperty("database.url"));
         dataSource.setUsername(environment.getProperty("database.username"));
         dataSource.setPassword(environment.getProperty("database.password"));
         return dataSource;
+    }
+
+    @Bean
+    public HibernateTransactionManager getTransactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(getSessionFactory().getObject());
+        return transactionManager;
     }
 }
