@@ -6,11 +6,13 @@
 package com.nekres.rm.service;
 
 import com.nekres.rm.pojo.UserStorage;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author nekres
  */
+@Service
 public interface UserStorageService {
     
     void save(UserStorage storage);

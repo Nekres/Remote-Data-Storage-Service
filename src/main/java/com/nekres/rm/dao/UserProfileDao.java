@@ -5,12 +5,16 @@
  */
 package com.nekres.rm.dao;
 
+import com.nekres.rm.pojo.UserProfile;
+import org.springframework.stereotype.Repository;
+
 /**
  *
  * @author nekres
  */
-public class UserProfileDao {
+@Repository
+public interface UserProfileDao {
     
-    //private SessionF
+    void add(UserProfile profile);
     
 }

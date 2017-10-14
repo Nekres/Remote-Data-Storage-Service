@@ -3,18 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.nekres.rm.pojo;
+package com.nekres.rm.dao;
+
+import com.nekres.rm.pojo.UserStorage;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author nekres
  */
-
-public class UserStorage {
+@Repository
+public interface UserStorageDao {
     
-    private int storageId;
+    void add(UserStorage storage);
     
-    private String mountPoint;
-    
+    UserStorage getById(int id); 
     
 }

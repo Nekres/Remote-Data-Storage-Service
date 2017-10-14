@@ -63,5 +63,10 @@ public class UserProfile {
         this.storageKey = storageKey;
     }
 
+    @Override
+    public String toString() {
+        return "UserProfile{" + "email=" + email + ", password=" + password + ", storageId=" + storageId + ", storageKey=" + storageKey + '}';
+    }
+    
     
 }
