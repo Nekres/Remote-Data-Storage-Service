@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface UserStorageService {
+    public static final String ROOT = "root/";
     
     void save(UserStorage storage);
     
@@ -22,4 +23,7 @@ public interface UserStorageService {
     void delete(UserStorage storage);
     
     UserStorage findById(int id);
+    
+    boolean createStorage(String key);
+    
 }

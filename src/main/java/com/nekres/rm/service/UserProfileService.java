@@ -15,7 +15,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface UserProfileService {
-    @Transactional
+    
     void save(UserProfile profile);
+    
     public boolean isKeyBusy(String key);
+    
+    public boolean isLoginBusy(String login);
+    
+    public UserProfile get(String login, String password);
 }

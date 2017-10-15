@@ -33,5 +33,17 @@ public class UserProfileServiceImpl implements UserProfileService {
     public boolean isKeyBusy(String key) {
         return profileDao.isKeyBusy(key);
     }
+    @Transactional
+    @Override
+    public boolean isLoginBusy(String login) {
+        return profileDao.isLoginBusy(login);
+    }
+    
+    @Transactional
+    @Override
+    public UserProfile get(String login, String password) {
+        return profileDao.get(login, password);
+    }
+    
 
 }

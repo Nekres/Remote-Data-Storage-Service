@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -18,18 +20,19 @@ import javax.persistence.UniqueConstraint;
  * @author nekres
  */
 @Entity
-@Table
+@Table(name = "user_profile")
 public class UserProfile {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
     
-    private String email;
+    private String login;
     
     private String password;
-    
-    private String storageId;
+    @OneToOne
+    @JoinColumn(name = "storage_id")
+    private UserStorage storage;
     @Column(unique = true)
     private String storageKey; //used to get access to user storage
     
@@ -37,20 +40,12 @@ public class UserProfile {
         
     }
 
-    public UserProfile(String email, String password, String storageId, String storageKey) {
-        this.email = email;
-        this.password = password;
-        this.storageId = storageId;
-        this.storageKey = storageKey;
-    }
-    
-    
-    public String getEmail() {
-        return email;
+    public String getLogin() {
+        return login;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String login) {
+        this.login = login;
     }
 
     public String getPassword() {
@@ -60,14 +55,7 @@ public class UserProfile {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getStorageId() {
-        return storageId;
-    }
-
-    public void setStorageId(String storageId) {
-        this.storageId = storageId;
-    }
+    
 
     public String getStorageKey() {
         return storageKey;
@@ -85,10 +73,15 @@ public class UserProfile {
         this.userId = userId;
     }
 
-    @Override
-    public String toString() {
-        return "UserProfile{" + "userId=" + userId + ", email=" + email + ", password=" + password + ", storageId=" + storageId + ", storageKey=" + storageKey + '}';
+    public UserStorage getStorage() {
+        return storage;
     }
+
+    public void setStorage(UserStorage storage) {
+        this.storage = storage;
+    }
+    
+    
 
     
     

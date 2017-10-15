@@ -15,8 +15,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserStorageDao {
     
-    void add(UserStorage storage);
+    void save(UserStorage storage);
     
+    void update(UserStorage storage);
+    
+    void delete(UserStorage storage);
     UserStorage getById(int id); 
     
 }

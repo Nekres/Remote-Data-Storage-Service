@@ -8,6 +8,7 @@ package com.nekres.rm.dao.impl;
 import com.nekres.rm.dao.UserStorageDao;
 import com.nekres.rm.pojo.UserStorage;
 import java.util.logging.Logger;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,13 +29,29 @@ public class UserStorageDaoImpl implements UserStorageDao{
     }
     
     @Override
-    public void add(UserStorage storage) {
-        
+    public void save(UserStorage storage) {
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(storage);
+        logger.info("Saving " + storage.toString());
     }
 
     @Override
     public UserStorage getById(int id) {
      return null;   
+    }
+
+    @Override
+    public void update(UserStorage storage) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(storage);
+        logger.info("Updating " + storage.toString());
+    }
+
+    @Override
+    public void delete(UserStorage storage) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(storage);
+        logger.info("Deleting " + storage.toString());
     }
     
     

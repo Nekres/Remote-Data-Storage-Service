@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.nekres.rm.controller;
+package com.nekres.rm.exceptions;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author nekres
  */
-public class StorageController {
+
+public class RemoteDataStoreServiceException extends RuntimeException{
     
 }
