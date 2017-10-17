@@ -18,7 +18,7 @@ public interface UserProfileService {
     
     void save(UserProfile profile);
     
-    public boolean isKeyBusy(String key);
+    public boolean isKeyExist(String key);
     
     public boolean isLoginBusy(String login);
     

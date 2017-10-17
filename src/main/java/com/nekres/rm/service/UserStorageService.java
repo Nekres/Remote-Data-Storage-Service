@@ -26,4 +26,9 @@ public interface UserStorageService {
     
     boolean createStorage(String key);
     
+    boolean mkdir(String directory, String key);
+    
+    boolean rename(String filepath, String oldName, String newName);
+    
+    
 }

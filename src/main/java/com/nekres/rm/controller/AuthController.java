@@ -50,7 +50,7 @@ public class AuthController {
         }
         String key = UUID.randomUUID().toString();
         
-        while(userProfileService.isKeyBusy(key)){ //simple way to prevent duplicates
+        while(userProfileService.isKeyExist(key)){ //simple way to prevent duplicates
             key = UUID.randomUUID().toString();
         }
         UserStorage storage = new UserStorage();

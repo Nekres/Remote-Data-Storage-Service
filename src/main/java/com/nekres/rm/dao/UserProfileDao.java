@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public interface UserProfileDao {
     
     void save(UserProfile profile);
-    boolean isKeyBusy(String key);
+    boolean isKeyExist(String key);
     boolean isLoginBusy(String login);
     UserProfile get(String login, String password);
 }

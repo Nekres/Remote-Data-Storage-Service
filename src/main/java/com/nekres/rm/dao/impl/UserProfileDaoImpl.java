@@ -46,7 +46,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
     }
 
     @Override
-    public boolean isKeyBusy(String key) {
+    public boolean isKeyExist(String key) {
         return !queryBuilder("storageKey", key).isEmpty();
     }
 

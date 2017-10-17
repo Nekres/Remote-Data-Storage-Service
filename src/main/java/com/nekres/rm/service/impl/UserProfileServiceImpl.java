@@ -30,8 +30,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Transactional
     @Override
-    public boolean isKeyBusy(String key) {
-        return profileDao.isKeyBusy(key);
+    public boolean isKeyExist(String key) {
+        return profileDao.isKeyExist(key);
     }
     @Transactional
     @Override

@@ -9,6 +9,21 @@ package com.nekres.rm.exceptions;
  *
  * @author nekres
  */
-public class NoSuchFileException {
+public class NoSuchFileException extends RemoteDataStoreServiceException{
+    
+    private String message;
+
+    public NoSuchFileException(String message) {
+        this.message = message;
+    }
+
+    public NoSuchFileException() {
+    }
+
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+    
     
 }
