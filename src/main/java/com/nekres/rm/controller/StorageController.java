@@ -40,7 +40,7 @@ public class StorageController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>("No storage with such key registered","error"));
         userStorageService.mkdir(directory, key);
         logger.info("mkdir " + directory);
-        return ResponseEntity.ok(new Response<String>("Directory " + directory + "successfully created", "success"));
+        return ResponseEntity.ok(new Response<String>("Directory " + directory + " successfully created", "success"));
     }
     @RequestMapping(path = "/rename", method = RequestMethod.GET)
     public ResponseEntity rename(@RequestParam final String key, @RequestParam final String oldFilePath,
@@ -55,20 +55,7 @@ public class StorageController {
         if(file.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>("No file selected", "error"));
         }
-        try{
-            byte bytes[] = file.getBytes();
-            StringBuilder builder = new StringBuilder(key);
-            builder.append("/");
-            builder.append(targetDir);
-            builder.append("/");
-            builder.append(file.getOriginalFilename());
-            Path path = Paths.get(builder.toString());
-            
-            Files.write(path, bytes);
-        }catch(IOException iox){
-            iox.printStackTrace();
-            return ResponseEntity.badRequest().body(new Response<String>("File uploading failed.", "error"));
-        }
+        userStorageService.uploadFile(file, key, targetDir);
         return ResponseEntity.ok(new Response<String>("File uploaded.","success"));
     }
     @ExceptionHandler

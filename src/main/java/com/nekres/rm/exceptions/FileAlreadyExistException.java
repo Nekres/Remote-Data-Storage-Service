@@ -11,4 +11,18 @@ package com.nekres.rm.exceptions;
  */
 public class FileAlreadyExistException extends RemoteDataStoreServiceException{
     
+    private String message;
+
+    public FileAlreadyExistException(String message) {
+        this.message = message;
+    }
+
+    public FileAlreadyExistException() {
+    }
+    
+    @Override
+    public String getMessage() {
+        return super.getMessage(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

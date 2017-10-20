@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.*;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @PropertySource("classpath:database.properties")
 @ComponentScan(basePackages = {"com.nekres.rm"})
 public class AppConfiguration {
+    public static final int MAX_FILE_SIZE = 10000000;
 
     @Autowired
     private Environment environment;
@@ -65,7 +67,10 @@ public class AppConfiguration {
         return transactionManager;
     }
     @Bean
-    public MultipartResolver multipartResolver(){
-        return new StandardServletMultipartResolver();
+    public CommonsMultipartResolver multipartResolver(){
+        CommonsMultipartResolver cmr = new CommonsMultipartResolver();
+       // cmr.setMaxUploadSize(MAX_FILE_SIZE * 10);
+      //  cmr.setMaxUploadSizePerFile(MAX_FILE_SIZE);
+        return cmr;
     }
 }

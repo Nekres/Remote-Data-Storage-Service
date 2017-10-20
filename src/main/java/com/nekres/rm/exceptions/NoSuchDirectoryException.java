@@ -9,6 +9,22 @@ package com.nekres.rm.exceptions;
  *
  * @author nekres
  */
-public class NoSuchDirectoryException {
+public class NoSuchDirectoryException extends RemoteDataStoreServiceException{
+
+    private String message;
+    
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+
+    public NoSuchDirectoryException() {
+    }
+
+    public NoSuchDirectoryException(String message) {
+        this.message = message;
+    }
+    
+    
     
 }

@@ -7,15 +7,22 @@ package com.nekres.rm.service.impl;
 
 import com.nekres.rm.dao.UserStorageDao;
 import com.nekres.rm.exceptions.FileAlreadyExistException;
+import com.nekres.rm.exceptions.NoSuchDirectoryException;
 import com.nekres.rm.exceptions.NoSuchFileException;
 import com.nekres.rm.pojo.UserStorage;
+import com.nekres.rm.pojo.response.Response;
 import com.nekres.rm.service.UserStorageService;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -83,6 +90,22 @@ public class UserStorageServiceImpl implements UserStorageService{
         StringBuilder builder = new StringBuilder(ROOT);
         builder.append(key).append("/").append(filepath);
         return builder.toString();
+    }
+
+    @Override
+    public void uploadFile(MultipartFile file, String key, String targetDirectory) {
+        StringBuilder builder = new StringBuilder(getPath(targetDirectory, key));
+        try{
+            byte bytes[] = file.getBytes();
+            builder.append("/");
+            builder.append(file.getOriginalFilename());
+            Path path = Paths.get(builder.toString());
+            
+            Files.write(path, bytes);
+        }catch(IOException iox){
+            iox.printStackTrace();
+            throw new NoSuchDirectoryException("Failed to upload file to " + builder.toString());
+        }
     }
 
 

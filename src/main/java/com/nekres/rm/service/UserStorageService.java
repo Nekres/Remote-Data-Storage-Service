@@ -7,6 +7,7 @@ package com.nekres.rm.service;
 
 import com.nekres.rm.pojo.UserStorage;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -30,5 +31,6 @@ public interface UserStorageService {
     
     boolean rename(String filepath, String oldName, String newName);
     
+    void uploadFile(MultipartFile file, String key, String targetDirectory);
     
 }
