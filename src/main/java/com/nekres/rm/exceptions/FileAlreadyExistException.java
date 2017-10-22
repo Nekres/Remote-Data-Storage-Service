@@ -22,7 +22,7 @@ public class FileAlreadyExistException extends RemoteDataStoreServiceException{
     
     @Override
     public String getMessage() {
-        return super.getMessage(); //To change body of generated methods, choose Tools | Templates.
+        return this.message;
     }
     
 }

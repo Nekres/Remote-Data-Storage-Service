@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -50,7 +51,7 @@ public class StorageController {
             return ResponseEntity.ok(new Response<String>("File renamed.", "success"));
         else return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<String>("Problems while renaming file.","error"));
     }
-    @RequestMapping(path = "uploadFile", method = RequestMethod.POST)
+    @RequestMapping(path = "/uploadFile", method = RequestMethod.POST)
     public ResponseEntity upload(@RequestParam("file") MultipartFile file, @RequestParam("target") String targetDir, @RequestParam("key") String key, RedirectAttributes attributes){
         if(file.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>("No file selected", "error"));
@@ -58,15 +59,40 @@ public class StorageController {
         userStorageService.uploadFile(file, key, targetDir);
         return ResponseEntity.ok(new Response<String>("File uploaded.","success"));
     }
+    @RequestMapping(path = "/explore", method = RequestMethod.GET)
+    public ResponseEntity explore(@RequestParam String key){
+        return ResponseEntity.ok(userStorageService.explore(key));
+    }
+    @RequestMapping(path = "/move", method = RequestMethod.GET)
+    public ResponseEntity move(@RequestParam String sourceFile,@RequestParam("new_file_name") String newFileName, @RequestParam String destination, @RequestParam String key){
+        userStorageService.move(sourceFile,newFileName, destination, key);
+        return ResponseEntity.ok(new Response<String>("file successfully moved to " + destination, "success"));
+    }
+    @RequestMapping(path= "/search", method = RequestMethod.GET)
+    public ResponseEntity search(@RequestParam String file, @RequestParam String key){
+        ArrayList<String> searchList = userStorageService.search(file, key);
+        return ResponseEntity.ok(new Response<ArrayList<String>>(searchList,"success"));
+    }
     @ExceptionHandler
     @ResponseBody
     public ResponseEntity handleNoSuchStorageException(NoSuchStorageException ne){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>("No storage with such key registered","error"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>(ne.getMessage(),"error"));
     }
     
     @ExceptionHandler
     @ResponseBody
     public ResponseEntity handleNoFileException(NoSuchFileException nsfe){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>("No such file.", "error"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>(nsfe.getMessage(), "error"));
     }
+    @ExceptionHandler
+    @ResponseBody
+    public ResponseEntity handleFileAlreadyExistException(FileAlreadyExistException alreadyExistException){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<String>(alreadyExistException.getMessage(),"error"));
+    }
+    @ExceptionHandler
+    @ResponseBody
+    public ResponseEntity handleNoSuchDirectoryException(NoSuchDirectoryException nsde){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<String>(nsde.getMessage(),"error"));
+    }
+    
 }
