@@ -11,6 +11,7 @@ import com.nekres.rm.exceptions.NoSuchDirectoryException;
 import com.nekres.rm.exceptions.NoSuchFileException;
 import com.nekres.rm.exceptions.NoSuchStorageException;
 import com.nekres.rm.pojo.UserStorage;
+import com.nekres.rm.pojo.response.Tuple;
 import com.nekres.rm.service.*;
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.nio.file.*;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
 import org.apache.commons.io.FileUtils;
@@ -60,8 +62,11 @@ public class UserStorageServiceImpl implements UserStorageService{
 
     @Override
     public boolean createStorage(String key) {
-        File file = new File(ROOT +key);
-        return file.mkdirs();
+        String filepath = ROOT + key;
+        File file = new File(filepath);
+        File versions = new File(filepath + VERSIONS);
+        File trash = new File(filepath + TRASH);
+        return file.mkdirs() && versions.mkdirs() && trash.mkdirs();
     }
     @Override
     public boolean mkdir(final String directory, final String key) {
@@ -107,44 +112,31 @@ public class UserStorageServiceImpl implements UserStorageService{
         if(!userProfileService.isKeyExist(key))
             throw new NoSuchStorageException("No storage with key " + key);
         StringBuilder builder = new StringBuilder(getPath(targetDirectory, key));
-        try{
-            byte bytes[] = file.getBytes();
             builder.append("/");
             builder.append(file.getOriginalFilename());
-            Path path = Paths.get(builder.toString());
+        try {
             checkSecurity(new File(builder.toString()).getCanonicalPath(), key);
-            Files.write(path, bytes);
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+            writeFile(builder.toString(), file);
+    }
+    private final void writeFile(String filepath, MultipartFile file){
+        try{
+            Path path = Paths.get(filepath);
+            Files.write(path, file.getBytes());
         }catch(IOException iox){
             iox.printStackTrace();
-            throw new NoSuchDirectoryException("Failed to upload file to " + builder.toString());
+            throw new NoSuchDirectoryException("Failed to upload file to " + filepath);
         }
     }
-    
     private void checkSecurity(String directory, String key){
         if(!directory.contains(key)){
             throw new NoSuchDirectoryException("Path is not correct.");
         }
     }
 
-    @Override
-    public Collection<String> explore(String key) {
-        if(!userProfileService.isKeyExist(key))
-            throw new NoSuchStorageException("No storage with key" + key);
-        File file = new File(ROOT+key);
-        Collection<String> list = new ArrayList<>();
-        Collection<File> files = FileUtils.listFiles(file, null, true);
-        for(File f : files){
-            if(f.isDirectory()){
-            list.add(f.getName() + " *dir*");
-            }
-            list.add(f.getName());
-        }
-        return list;
-    }
     
-    private final void tree(File[] array, ArrayList<ArrayList<String>> list){
-    }
-
     @Override
     public void move(String sourceFile, String newFileName, String destinationFolder, String key) {
         if(!userProfileService.isKeyExist(key))
@@ -162,25 +154,37 @@ public class UserStorageServiceImpl implements UserStorageService{
     }
 
     @Override
-    public ArrayList<String> search(String file, String key) {
+    public Tuple search(String file, String key) {
         if(!userProfileService.isKeyExist(key))
             throw new NoSuchStorageException("No storage with key " + key);
-        ArrayList<String> list = new ArrayList<String>();
-        checkDirectory(file, new File(ROOT+ "/"+ key), list);
-        return list;
+        ArrayList<String> files = new ArrayList<String>();
+        ArrayList<String> directories = new ArrayList<>();
+        checkDirectory(file, new File(ROOT+ "/"+ key), files, directories);
+        return new Tuple(directories,files);
     }
     
-    private void checkDirectory(String pattern, File file,ArrayList<String> files){
-        if(file.getName().contains(pattern))
+    private void checkDirectory(String pattern, File file,ArrayList<String> files, ArrayList<String> directories){
+        if(file.getName().contains(pattern) && !file.isDirectory())
             files.add(file.getPath());
-        
         if(file.isDirectory()){
+            if(file.getName().contains(pattern))
+                directories.add(file.getPath());
             for(File f : file.listFiles()){
-                checkDirectory(pattern, f, files);
-                logger.info(f.getName());
+                checkDirectory(pattern, f, files, directories);
             }
         }
     }
+    
+    @Override
+    public boolean remove(String file, String key) {
+        if(!userProfileService.isKeyExist(key))
+            throw new NoSuchStorageException("No storage with key " + key);
+        File f= new File(getPath(file, key));
+        if(!f.exists())
+            throw new NoSuchFileException("No such file");
+        return f.delete();
+    }
+    
 
 
 }

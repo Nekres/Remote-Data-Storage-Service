@@ -6,8 +6,7 @@
 package com.nekres.rm.service;
 
 import com.nekres.rm.pojo.UserStorage;
-import java.io.File;
-import java.util.ArrayList;
+import com.nekres.rm.pojo.response.Tuple;
 import java.util.Collection;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,9 +35,8 @@ public interface UserStorageService {
     
     void uploadFile(MultipartFile file, String key, String targetDirectory);
     
-    Collection<String> explore(String key);
-    
     void move(String sourceFile, String sourceDir, String destinationFolder, String key);
     
-    ArrayList search(String file, String key);
+    boolean remove(String file, String key);
+    Tuple search(String file, String key);
 }

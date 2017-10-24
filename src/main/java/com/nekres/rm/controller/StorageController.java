@@ -7,12 +7,8 @@ package com.nekres.rm.controller;
 
 import com.nekres.rm.exceptions.*;
 import com.nekres.rm.pojo.response.Response;
+import com.nekres.rm.pojo.response.Tuple;
 import com.nekres.rm.service.*;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -59,10 +55,6 @@ public class StorageController {
         userStorageService.uploadFile(file, key, targetDir);
         return ResponseEntity.ok(new Response<String>("File uploaded.","success"));
     }
-    @RequestMapping(path = "/explore", method = RequestMethod.GET)
-    public ResponseEntity explore(@RequestParam String key){
-        return ResponseEntity.ok(userStorageService.explore(key));
-    }
     @RequestMapping(path = "/move", method = RequestMethod.GET)
     public ResponseEntity move(@RequestParam String sourceFile,@RequestParam("new_file_name") String newFileName, @RequestParam String destination, @RequestParam String key){
         userStorageService.move(sourceFile,newFileName, destination, key);
@@ -70,8 +62,17 @@ public class StorageController {
     }
     @RequestMapping(path= "/search", method = RequestMethod.GET)
     public ResponseEntity search(@RequestParam String file, @RequestParam String key){
-        ArrayList<String> searchList = userStorageService.search(file, key);
-        return ResponseEntity.ok(new Response<ArrayList<String>>(searchList,"success"));
+        Tuple searchList = userStorageService.search(file, key);
+        return ResponseEntity.ok(new Response<Tuple>(searchList,"success"));
+    }
+    @RequestMapping(path = "/remove", method = RequestMethod.GET)
+    public ResponseEntity remove(@RequestParam String file, @RequestParam String key) {
+        boolean result = userStorageService.remove(file, key);
+        if (result) {
+            return ResponseEntity.ok(new Response<String>("File " + file + " successfully removed.", "success"));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<String>("File can't be removed", "error"));
+        }
     }
     @ExceptionHandler
     @ResponseBody
