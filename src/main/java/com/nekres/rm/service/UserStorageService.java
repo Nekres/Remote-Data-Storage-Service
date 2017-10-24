@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface UserStorageService {
     public static final String ROOT = "root/";
+    public static final String TRASH = "/trash";
+    public static final String VERSIONS = "/versions";
     
     void save(UserStorage storage);
     
@@ -38,5 +40,6 @@ public interface UserStorageService {
     void move(String sourceFile, String sourceDir, String destinationFolder, String key);
     
     boolean remove(String file, String key);
+    
     Tuple search(String file, String key);
 }

@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
@@ -57,7 +59,7 @@ public class UserStorageServiceImpl implements UserStorageService{
     @Transactional
     @Override
     public UserStorage findById(int id) {
-        return null;
+        return null; //will be implemented later
     }
 
     @Override
@@ -109,17 +111,40 @@ public class UserStorageServiceImpl implements UserStorageService{
 
     @Override
     public void uploadFile(MultipartFile file, String key, String targetDirectory) {
-        if(!userProfileService.isKeyExist(key))
+        if (!userProfileService.isKeyExist(key)) {
             throw new NoSuchStorageException("No storage with key " + key);
+        }
         StringBuilder builder = new StringBuilder(getPath(targetDirectory, key));
-            builder.append("/");
-            builder.append(file.getOriginalFilename());
+        builder.append("/");
+        builder.append(file.getOriginalFilename());
+        String filepath = builder.toString();
         try {
+            File f = new File(filepath);
+            if(f.exists()){
+                if(isSame(filepath, file)){
+                    throw new FileAlreadyExistException("File already has actual version");
+                }
+                else{
+                    replaceFileVersion(targetDirectory+"/" + file.getOriginalFilename(), f.getName(), key);
+                }
+            }
             checkSecurity(new File(builder.toString()).getCanonicalPath(), key);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-            writeFile(builder.toString(), file);
+        writeFile(builder.toString(), file);
+    }
+    private void replaceFileVersion(String filepath, String filename, String key){
+        String targetDirectory = getPath(VERSIONS, key) + "/" + filename;
+        File targetDir = new File(targetDirectory);
+        if(!targetDir.exists())
+            targetDir.mkdir();
+        move(filepath,new Date().toString(), VERSIONS + "/" + filename, key);
+    }
+    private boolean isSame(String existingFile, MultipartFile actualFile) throws IOException{
+        byte first[] = Files.readAllBytes(Paths.get(existingFile));
+        byte second[] = actualFile.getBytes();
+        return Arrays.equals(first, second);
     }
     private final void writeFile(String filepath, MultipartFile file){
         try{
@@ -143,8 +168,10 @@ public class UserStorageServiceImpl implements UserStorageService{
             throw new NoSuchStorageException("No storage with key " + key);
         try {
             File f = new File((getPath(sourceFile, key)));
-            if(!f.exists())
+            if(!f.exists()){
+                logger.info(f.getAbsolutePath());
                 throw new NoSuchFileException("No such file");
+            }
             checkSecurity(f.getCanonicalPath(), key);
             Files.move(Paths.get(getPath(sourceFile, key)), Paths.get(getPath(destinationFolder,key) + "/" + newFileName),StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
@@ -174,7 +201,6 @@ public class UserStorageServiceImpl implements UserStorageService{
             }
         }
     }
-    
     @Override
     public boolean remove(String file, String key) {
         if(!userProfileService.isKeyExist(key))
