@@ -5,7 +5,7 @@
  */
 package com.nekres.rm.service;
 
-import com.nekres.rm.pojo.UserStorage;
+import com.nekres.rm.entity.UserStorage;
 import com.nekres.rm.pojo.response.Tuple;
 import java.util.Collection;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface UserStorageService {
     public static final String ROOT = "root/";
-    public static final String TRASH = "/trash";
     public static final String VERSIONS = "/versions";
+    public static final String TRASH = "/trash";
     
     void save(UserStorage storage);
     
@@ -42,4 +42,6 @@ public interface UserStorageService {
     boolean remove(String file, String key);
     
     Tuple search(String file, String key);
+    
+    boolean restore(String file, String key);
 }

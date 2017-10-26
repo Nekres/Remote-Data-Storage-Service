@@ -3,13 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.nekres.rm.pojo;
+package com.nekres.rm.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -20,12 +28,14 @@ import javax.persistence.Table;
 @Table(name = "user_storage")
 public class UserStorage {
     @Id
-    @Column(name = "storage_id")
+    @Column(name = "user_storage_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int storageId;
     
     private String mountPoint;
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user_storage", cascade = CascadeType.ALL)
+    private Set<UserFile> files = new HashSet<>(0);
+    
     public int getStorageId() {
         return storageId;
     }
@@ -40,6 +50,14 @@ public class UserStorage {
 
     public void setMountPoint(String mountPoint) {
         this.mountPoint = mountPoint;
+    }
+
+    public Set<UserFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<UserFile> files) {
+        this.files = files;
     }
     
     

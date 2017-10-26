@@ -74,6 +74,10 @@ public class StorageController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<String>("File can't be removed", "error"));
         }
     }
+    @RequestMapping(path = "/restore", method = RequestMethod.GET)
+    public ResponseEntity restore(@RequestParam String file, @RequestParam String key){
+        return null;
+    }
     @ExceptionHandler
     @ResponseBody
     public ResponseEntity handleNoSuchStorageException(NoSuchStorageException ne){

@@ -5,7 +5,7 @@
  */
 package com.nekres.rm.dao;
 
-import com.nekres.rm.pojo.UserStorage;
+import com.nekres.rm.entity.UserStorage;
 import org.springframework.stereotype.Repository;
 
 /**

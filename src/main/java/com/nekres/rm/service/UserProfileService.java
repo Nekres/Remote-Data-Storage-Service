@@ -5,7 +5,7 @@
  */
 package com.nekres.rm.service;
 
-import com.nekres.rm.pojo.UserProfile;
+import com.nekres.rm.entity.UserProfile;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

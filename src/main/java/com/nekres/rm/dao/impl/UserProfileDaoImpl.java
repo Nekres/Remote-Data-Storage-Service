@@ -7,7 +7,7 @@ package com.nekres.rm.dao.impl;
 
 import com.nekres.rm.dao.UserProfileDao;
 import com.nekres.rm.exceptions.NoSuchStorageException;
-import com.nekres.rm.pojo.UserProfile;
+import com.nekres.rm.entity.UserProfile;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;

@@ -5,8 +5,11 @@
  */
 package com.nekres.rm.config;
 
-import com.nekres.rm.pojo.UserProfile;
-import com.nekres.rm.pojo.UserStorage;
+import com.nekres.rm.entity.AccessRights;
+import com.nekres.rm.entity.AccessRightsID;
+import com.nekres.rm.entity.UserFile;
+import com.nekres.rm.entity.UserProfile;
+import com.nekres.rm.entity.UserStorage;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -44,7 +47,7 @@ public class AppConfiguration {
         properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
 
         factoryBean.setHibernateProperties(properties);
-        factoryBean.setAnnotatedClasses(UserProfile.class, UserStorage.class);
+        factoryBean.setAnnotatedClasses(UserProfile.class, UserStorage.class, UserFile.class, AccessRights.class, AccessRightsID.class);
         return factoryBean;
     }
 

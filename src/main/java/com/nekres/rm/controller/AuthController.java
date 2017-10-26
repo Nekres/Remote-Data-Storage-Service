@@ -5,8 +5,9 @@
  */
 package com.nekres.rm.controller;
 
+import com.nekres.rm.entity.UserStorage;
+import com.nekres.rm.entity.UserProfile;
 import com.nekres.rm.exceptions.NoSuchStorageException;
-import com.nekres.rm.pojo.*;
 import com.nekres.rm.pojo.response.Response;
 import com.nekres.rm.service.*;
 import java.io.IOException;

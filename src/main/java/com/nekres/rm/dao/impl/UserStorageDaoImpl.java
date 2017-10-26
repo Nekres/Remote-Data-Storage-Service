@@ -6,7 +6,7 @@
 package com.nekres.rm.dao.impl;
 
 import com.nekres.rm.dao.UserStorageDao;
-import com.nekres.rm.pojo.UserStorage;
+import com.nekres.rm.entity.UserStorage;
 import java.util.logging.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

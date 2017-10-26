@@ -6,7 +6,7 @@
 package com.nekres.rm.service.impl;
 
 import com.nekres.rm.dao.UserProfileDao;
-import com.nekres.rm.pojo.UserProfile;
+import com.nekres.rm.entity.UserProfile;
 import com.nekres.rm.service.UserProfileService;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

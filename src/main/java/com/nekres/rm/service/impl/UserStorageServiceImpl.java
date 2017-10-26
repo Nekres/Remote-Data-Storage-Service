@@ -10,7 +10,7 @@ import com.nekres.rm.exceptions.FileAlreadyExistException;
 import com.nekres.rm.exceptions.NoSuchDirectoryException;
 import com.nekres.rm.exceptions.NoSuchFileException;
 import com.nekres.rm.exceptions.NoSuchStorageException;
-import com.nekres.rm.pojo.UserStorage;
+import com.nekres.rm.entity.UserStorage;
 import com.nekres.rm.pojo.response.Tuple;
 import com.nekres.rm.service.*;
 import java.io.File;
@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -139,7 +138,7 @@ public class UserStorageServiceImpl implements UserStorageService{
         File targetDir = new File(targetDirectory);
         if(!targetDir.exists())
             targetDir.mkdir();
-        move(filepath,new Date().toString(), VERSIONS + "/" + filename, key);
+        move(filepath,Long.toBinaryString(new Date().getTime()), VERSIONS + "/" + filename, key);
     }
     private boolean isSame(String existingFile, MultipartFile actualFile) throws IOException{
         byte first[] = Files.readAllBytes(Paths.get(existingFile));
@@ -160,7 +159,6 @@ public class UserStorageServiceImpl implements UserStorageService{
             throw new NoSuchDirectoryException("Path is not correct.");
         }
     }
-
     
     @Override
     public void move(String sourceFile, String newFileName, String destinationFolder, String key) {
@@ -169,7 +167,6 @@ public class UserStorageServiceImpl implements UserStorageService{
         try {
             File f = new File((getPath(sourceFile, key)));
             if(!f.exists()){
-                logger.info(f.getAbsolutePath());
                 throw new NoSuchFileException("No such file");
             }
             checkSecurity(f.getCanonicalPath(), key);
@@ -208,9 +205,42 @@ public class UserStorageServiceImpl implements UserStorageService{
         File f= new File(getPath(file, key));
         if(!f.exists())
             throw new NoSuchFileException("No such file");
+        try {
+            move(f.getCanonicalPath(), f.getName(), TRASH, key);
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
         return f.delete();
     }
+
+    @Override
+    public boolean restore(String file, String key) {
+        File fileToRestore = new File(getPath(file, key));
+        if(!fileToRestore.exists())
+            throw new NoSuchFileException("No such file.");
+        File f = getLatestVersion(fileToRestore.getName(), key);
+        fileToRestore.delete();
+       // move(f.getPath(), file, VERSIONS, key);
+        return false; //fileToRestore.delete() && 
+    }
     
+    private final File getLatestVersion(String filename, String key){
+        String path = getPath(VERSIONS, key) + "/" + filename;
+        logger.info(path);
+        File file = new File(path);
+        File[] files = file.listFiles();
+        if(files.length == 0)
+            return null;
+        long max = Long.parseLong(files[0].getName());
+        int imax = 0;
+        for(int i = 0; i < files.length-1; i++){
+            if(max < Long.parseLong(files[i+1].getName())){
+                max = Long.parseLong(files[i+1].getName());
+                imax = i;
+            }
+        }
+        return files[imax];
+    }
 
 
 }
