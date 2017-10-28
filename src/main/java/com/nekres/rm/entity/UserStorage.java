@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
+import org.hibernate.annotations.Proxy;
 
 /**
  *
@@ -19,12 +20,15 @@ import javax.persistence.*;
 public class UserStorage {
     @Id
     @Column(name = "user_storage_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int storageId;
     
     private String mountPoint;
     @OneToMany(mappedBy = "userStorage")
     private Set<AccessRights> files = new HashSet<>(0);
+
+    public UserStorage() {
+    }
     
     public int getStorageId() {
         return storageId;
@@ -50,13 +54,12 @@ public class UserStorage {
         this.files = files;
     }
 
-    
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 79 * hash + this.storageId;
-        hash = 79 * hash + Objects.hashCode(this.mountPoint);
-        hash = 79 * hash + Objects.hashCode(this.files);
+        int hash = 3;
+        hash = 97 * hash + this.storageId;
+        hash = 97 * hash + Objects.hashCode(this.mountPoint);
+        hash = 97 * hash + Objects.hashCode(this.files);
         return hash;
     }
 
@@ -85,6 +88,11 @@ public class UserStorage {
     }
 
     
+
+    @Override
+    public String toString() {
+        return "UserStorage{" + "storageId=" + storageId + ", mountPoint=" + mountPoint + ", files=" + files + '}';
+    }
 
     
     

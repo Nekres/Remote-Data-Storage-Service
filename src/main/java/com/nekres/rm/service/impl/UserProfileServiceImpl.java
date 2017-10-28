@@ -7,6 +7,7 @@ package com.nekres.rm.service.impl;
 
 import com.nekres.rm.dao.UserProfileDao;
 import com.nekres.rm.entity.UserProfile;
+import com.nekres.rm.entity.UserStorage;
 import com.nekres.rm.service.UserProfileService;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserProfile get(String login, String password) {
         return profileDao.get(login, password);
     }
-    
+    @Transactional
+    @Override
+    public int getStorageByKey(String key) {
+        return profileDao.getStorageByKey(key);
+    }
 
 }

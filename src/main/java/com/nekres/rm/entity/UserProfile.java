@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class UserProfile {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int userId;
     
     private String login;
@@ -26,7 +26,7 @@ public class UserProfile {
     @OneToOne
     @JoinColumn(name = "storage_id")
     private UserStorage storage;
-    @Column(unique = true)
+    @Column(unique = true, name = "storageKey")
     private String storageKey; //used to get access to user storage
     
     public UserProfile() {

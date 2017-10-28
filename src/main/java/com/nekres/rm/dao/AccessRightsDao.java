@@ -5,7 +5,7 @@
  */
 package com.nekres.rm.dao;
 
-import com.nekres.rm.entity.UserStorage;
+import com.nekres.rm.entity.AccessRights;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,14 +13,9 @@ import org.springframework.stereotype.Repository;
  * @author nekres
  */
 @Repository
-public interface UserStorageDao {
+public interface AccessRightsDao {
     
-    void save(UserStorage storage);
+    void save(AccessRights accessRights);
     
-    void update(UserStorage storage);
-    
-    void delete(UserStorage storage);
-    UserStorage getById(int id); 
-    void saveDetached(UserStorage storage);
-    
+    void update(AccessRights accessRights);
 }

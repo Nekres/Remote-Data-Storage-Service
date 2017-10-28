@@ -5,9 +5,9 @@
  */
 package com.nekres.rm.service.impl;
 
-import com.nekres.rm.dao.UserFileDao;
-import com.nekres.rm.entity.UserFile;
-import com.nekres.rm.service.UserFileService;
+import com.nekres.rm.dao.AccessRightsDao;
+import com.nekres.rm.entity.AccessRights;
+import com.nekres.rm.service.AccessRightsService;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,18 +17,17 @@ import org.springframework.stereotype.Service;
  * @author nekres
  */
 @Service
-public class UserFileServiceImpl implements UserFileService{
-    @Autowired
-    private UserFileDao userFileDao;
+public class AccessRightsServiceImpl implements AccessRightsService{
+    @Autowired private AccessRightsDao accessRightsDao;
     @Transactional
     @Override
-    public void save(UserFile userFile) {
-        userFileDao.save(userFile);
+    public void save(AccessRights accessRights) {
+        accessRightsDao.save(accessRights);
     }
-
+    @Transactional
     @Override
-    public void update(UserFile userFile) {
-        userFileDao.update(userFile);
+    public void update(AccessRights accessRights) {
+        accessRightsDao.update(accessRights);
     }
     
 }

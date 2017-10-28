@@ -25,13 +25,12 @@ public class UserFile {
     private String name;
     @Column(name = "path")
     private String path;
-    @Column(name = "previous_version")
-    private UserFile previousVersion;
-   // @Column(name = "file_owner")
-  //  private UserStorage fileOwner;
     @OneToMany(mappedBy = "userFile")
     private Set<AccessRights> storages = new HashSet<AccessRights>(0);
 
+    public UserFile() {
+    }
+    
     public int getUserFileId() {
         return userFileId;
     }
@@ -64,14 +63,6 @@ public class UserFile {
         this.storages = storages;
     }
 
-    public UserFile getPreviousVersion() {
-        return previousVersion;
-    }
-
-    public void setPreviousVersion(UserFile previousVersion) {
-        this.previousVersion = previousVersion;
-    }
-    
     @Override
     public int hashCode() {
         int hash = 7;

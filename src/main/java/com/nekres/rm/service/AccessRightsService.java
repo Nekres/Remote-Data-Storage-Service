@@ -5,7 +5,7 @@
  */
 package com.nekres.rm.service;
 
-import com.nekres.rm.entity.UserFile;
+import com.nekres.rm.entity.AccessRights;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
  * @author nekres
  */
 @Service
-public interface UserFileService {
-    
-    void save(UserFile userFile);
-    
-    void update(UserFile userFile);
+public interface AccessRightsService {
+    void save(AccessRights accessRights);
+    void update(AccessRights accessRights);
 }

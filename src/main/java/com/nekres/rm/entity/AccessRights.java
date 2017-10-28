@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,34 +33,36 @@ public class AccessRights {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_file_id")
     private UserFile userFile;
-    private int r;
-    private int w;
+    @Column(name = "r")
+    private int read;
+    @Column(name = "w")
+    private int write;
 
 
     public int getRead() {
-        return r;
+        return read;
     }
 
     public void setRead(int r) {
-        this.r = r;
+        this.read = r;
     }
 
     public int getWrite() {
-        return w;
+        return write;
     }
 
     public void setWrite(int w) {
-        this.w = w;
+        this.write = w;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 11 * hash + this.id;
-        hash = 11 * hash + Objects.hashCode(this.userStorage);
-        hash = 11 * hash + Objects.hashCode(this.userFile);
-        hash = 11 * hash + this.r;
-        hash = 11 * hash + this.w;
+        hash = 11 * hash + Objects.hashCode(this.userStorage.getStorageId());
+        hash = 11 * hash + Objects.hashCode(this.userFile.getUserFileId());
+        hash = 11 * hash + this.read;
+        hash = 11 * hash + this.write;
         return hash;
     }
 
@@ -78,10 +81,10 @@ public class AccessRights {
         if (this.id != other.id) {
             return false;
         }
-        if (this.r != other.r) {
+        if (this.read != other.read) {
             return false;
         }
-        if (this.w != other.w) {
+        if (this.write != other.write) {
             return false;
         }
         if (!Objects.equals(this.userStorage, other.userStorage)) {

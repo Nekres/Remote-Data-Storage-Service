@@ -6,6 +6,7 @@
 package com.nekres.rm.dao;
 
 import com.nekres.rm.entity.UserProfile;
+import com.nekres.rm.entity.UserStorage;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,4 +20,5 @@ public interface UserProfileDao {
     boolean isKeyExist(String key);
     boolean isLoginBusy(String login);
     UserProfile get(String login, String password);
+    public int getStorageByKey(String key);
 }

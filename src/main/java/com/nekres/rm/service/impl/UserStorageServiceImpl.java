@@ -5,12 +5,17 @@
  */
 package com.nekres.rm.service.impl;
 
+import com.nekres.rm.dao.AccessRightsDao;
+import com.nekres.rm.dao.UserProfileDao;
 import com.nekres.rm.dao.UserStorageDao;
+import com.nekres.rm.entity.AccessRights;
+import com.nekres.rm.entity.UserFile;
 import com.nekres.rm.exceptions.*;
 import com.nekres.rm.exceptions.NoSuchFileException;
 import com.nekres.rm.entity.UserStorage;
 import com.nekres.rm.pojo.response.Tuple;
 import com.nekres.rm.service.*;
+import com.nekres.rm.utils.PathBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -19,6 +24,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,29 +33,31 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author nekres
  */
+
 @Service
+@Transactional
 public class UserStorageServiceImpl implements UserStorageService{
     private Logger logger = Logger.getLogger(UserStorageServiceImpl.class.getName());
     @Autowired
     private UserStorageDao userStorageDao;
     @Autowired
     private UserProfileService userProfileService;
-    @Transactional
+    @Autowired
+    private UserProfileDao userProfileDao;
+    @Autowired
+    private AccessRightsDao accessRightsDao;
     @Override
     public void save(UserStorage storage) {
         userStorageDao.save(storage);
     }
-    @Transactional
     @Override
     public void update(UserStorage storage) {
         userStorageDao.update(storage);
     }
-    @Transactional
     @Override
     public void delete(UserStorage storage) {
         userStorageDao.delete(storage);
     }
-    @Transactional
     @Override
     public UserStorage findById(int id) {
         return null; //will be implemented later
@@ -107,9 +115,9 @@ public class UserStorageServiceImpl implements UserStorageService{
         if (!userProfileService.isKeyExist(key)) {
             throw new NoSuchStorageException("No storage with key " + key);
         }
-        StringBuilder builder = new StringBuilder(getPath(targetDirectory, key));
-        builder.append("/");
-        builder.append(file.getOriginalFilename());
+        PathBuilder builder = new PathBuilder();
+        builder.appendDirectory(ROOT).appendDirectory(key).appendDirectory(targetDirectory)
+                .appendDirectory(file.getOriginalFilename());
         String filepath = builder.toString();
         try {
             File f = new File(filepath);
@@ -118,7 +126,10 @@ public class UserStorageServiceImpl implements UserStorageService{
                     throw new FileAlreadyExistException("File already has actual version");
                 }
                 else{
-                    replaceFileVersion(targetDirectory+"/" + file.getOriginalFilename(), f.getName(), key);
+                    PathBuilder pathBuilder = new PathBuilder();
+                    pathBuilder.appendDirectory(targetDirectory);
+                    pathBuilder.appendDirectory(file.getOriginalFilename());
+                    replaceFileVersion(pathBuilder.toString(), f.getName(), key);
                 }
             }
             checkSecurity(new File(builder.toString()).getCanonicalPath(), key);
@@ -126,13 +137,17 @@ public class UserStorageServiceImpl implements UserStorageService{
             logger.log(Level.SEVERE, null, ex);
         }
         writeFile(builder.toString(), file);
+        persistFile(file.getOriginalFilename(), builder.toString(), key);
     }
     private void replaceFileVersion(String filepath, String filename, String key){
-        String targetDirectory = getPath(VERSIONS, key) + "/" + filename;
+        PathBuilder builder = new PathBuilder();
+        builder.appendDirectory(key).appendDirectory(VERSIONS).appendDirectory(filename);
+        String targetDirectory = builder.toString();
         File targetDir = new File(targetDirectory);
         if(!targetDir.exists())
             targetDir.mkdir();
-        move(filepath,Long.toBinaryString(new Date().getTime()), VERSIONS + "/" + filename, key);
+        move(filepath,Long.toBinaryString(new Date().getTime()), new PathBuilder().appendDirectory(VERSIONS).
+                appendDirectory(filename).toString(), key);
     }
     private boolean isSame(String existingFile, MultipartFile actualFile) throws IOException{
         byte first[] = Files.readAllBytes(Paths.get(existingFile));
@@ -142,6 +157,7 @@ public class UserStorageServiceImpl implements UserStorageService{
     private final void writeFile(String filepath, MultipartFile file){
         try{
             Path path = Paths.get(filepath);
+            logger.info(filepath);
             Files.write(path, file.getBytes());
         }catch(IOException iox){
             iox.printStackTrace();
@@ -235,6 +251,21 @@ public class UserStorageServiceImpl implements UserStorageService{
         }
         return files[imax];
     }
-
+    private final void persistFile(String filename, String filepath, String key){
+        UserFile file = new UserFile();
+        file.setName(filename);
+        file.setPath(filepath);
+        int storageid = userProfileDao.getStorageByKey(key);
+        UserStorage storage = userStorageDao.getById(storageid);
+        AccessRights accessRights = new AccessRights();
+        accessRights.setUserFile(file);
+        accessRights.setUserStorage(storage);
+        accessRights.setRead(1);
+        accessRights.setWrite(1);
+        logger.info("FUCK YOU FUCK YOU FUCK YOU");
+       // userStorageDao.saveDetached(storage);
+        logger.info("\n HHHHHH" + storage.toString());
+        accessRightsDao.save(accessRights);
+    }
 
 }

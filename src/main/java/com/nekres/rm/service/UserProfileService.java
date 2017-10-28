@@ -6,6 +6,7 @@
 package com.nekres.rm.service;
 
 import com.nekres.rm.entity.UserProfile;
+import com.nekres.rm.entity.UserStorage;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -23,4 +24,6 @@ public interface UserProfileService {
     public boolean isLoginBusy(String login);
     
     public UserProfile get(String login, String password);
+    
+    public int getStorageByKey(String key);
 }

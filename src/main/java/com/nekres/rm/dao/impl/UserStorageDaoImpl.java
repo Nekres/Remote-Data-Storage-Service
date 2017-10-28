@@ -8,6 +8,7 @@ package com.nekres.rm.dao.impl;
 import com.nekres.rm.dao.UserStorageDao;
 import com.nekres.rm.entity.UserStorage;
 import java.util.logging.Logger;
+import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +28,18 @@ public class UserStorageDaoImpl implements UserStorageDao{
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-    
     @Override
     public void save(UserStorage storage) {
         Session session = sessionFactory.getCurrentSession();
         session.persist(storage);
         logger.info("Saving " + storage.toString());
     }
-
     @Override
     public UserStorage getById(int id) {
-     return null;   
+        Session session = sessionFactory.getCurrentSession();
+        UserStorage storage =  session.get(UserStorage.class, new Integer(id));
+        return storage;
     }
-
     @Override
     public void update(UserStorage storage) {
         Session session = sessionFactory.getCurrentSession();
@@ -53,6 +53,14 @@ public class UserStorageDaoImpl implements UserStorageDao{
         session.delete(storage);
         logger.info("Deleting " + storage.toString());
     }
+
+    @Override
+    public void saveDetached(UserStorage storage) {
+        Session session = sessionFactory.getCurrentSession();
+        session.merge(storage);
+        logger.info("Merging");
+    }
+    
     
     
 }
