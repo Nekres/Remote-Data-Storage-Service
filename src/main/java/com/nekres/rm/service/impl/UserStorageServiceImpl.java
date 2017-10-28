@@ -6,10 +6,8 @@
 package com.nekres.rm.service.impl;
 
 import com.nekres.rm.dao.UserStorageDao;
-import com.nekres.rm.exceptions.FileAlreadyExistException;
-import com.nekres.rm.exceptions.NoSuchDirectoryException;
+import com.nekres.rm.exceptions.*;
 import com.nekres.rm.exceptions.NoSuchFileException;
-import com.nekres.rm.exceptions.NoSuchStorageException;
 import com.nekres.rm.entity.UserStorage;
 import com.nekres.rm.pojo.response.Tuple;
 import com.nekres.rm.service.*;
@@ -17,10 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
@@ -39,7 +34,6 @@ public class UserStorageServiceImpl implements UserStorageService{
     private UserStorageDao userStorageDao;
     @Autowired
     private UserProfileService userProfileService;
-    
     @Transactional
     @Override
     public void save(UserStorage storage) {

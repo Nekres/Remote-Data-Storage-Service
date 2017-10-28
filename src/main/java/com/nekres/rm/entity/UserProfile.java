@@ -5,15 +5,8 @@
  */
 package com.nekres.rm.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import java.util.Objects;
+import javax.persistence.*;
 
 /**
  *
@@ -79,6 +72,47 @@ public class UserProfile {
 
     public void setStorage(UserStorage storage) {
         this.storage = storage;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + this.userId;
+        hash = 37 * hash + Objects.hashCode(this.login);
+        hash = 37 * hash + Objects.hashCode(this.password);
+        hash = 37 * hash + Objects.hashCode(this.storage);
+        hash = 37 * hash + Objects.hashCode(this.storageKey);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserProfile other = (UserProfile) obj;
+        if (this.userId != other.userId) {
+            return false;
+        }
+        if (!Objects.equals(this.login, other.login)) {
+            return false;
+        }
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        if (!Objects.equals(this.storageKey, other.storageKey)) {
+            return false;
+        }
+        if (!Objects.equals(this.storage, other.storage)) {
+            return false;
+        }
+        return true;
     }
     
     

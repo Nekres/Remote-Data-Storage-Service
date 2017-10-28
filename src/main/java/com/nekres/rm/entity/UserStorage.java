@@ -6,19 +6,9 @@
 package com.nekres.rm.entity;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *
@@ -33,13 +23,13 @@ public class UserStorage {
     private int storageId;
     
     private String mountPoint;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user_storage", cascade = CascadeType.ALL)
-    private Set<UserFile> files = new HashSet<>(0);
+    @OneToMany(mappedBy = "userStorage")
+    private Set<AccessRights> files = new HashSet<>(0);
     
     public int getStorageId() {
         return storageId;
     }
-
+    
     public void setStorageId(int storageId) {
         this.storageId = storageId;
     }
@@ -52,14 +42,50 @@ public class UserStorage {
         this.mountPoint = mountPoint;
     }
 
-    public Set<UserFile> getFiles() {
+    public Set<AccessRights> getFiles() {
         return files;
     }
 
-    public void setFiles(Set<UserFile> files) {
+    public void setFiles(Set<AccessRights> files) {
         this.files = files;
     }
+
     
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + this.storageId;
+        hash = 79 * hash + Objects.hashCode(this.mountPoint);
+        hash = 79 * hash + Objects.hashCode(this.files);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserStorage other = (UserStorage) obj;
+        if (this.storageId != other.storageId) {
+            return false;
+        }
+        if (!Objects.equals(this.mountPoint, other.mountPoint)) {
+            return false;
+        }
+        if (!Objects.equals(this.files, other.files)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+
     
     
 }

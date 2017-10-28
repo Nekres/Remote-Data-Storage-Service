@@ -6,7 +6,6 @@
 package com.nekres.rm.config;
 
 import com.nekres.rm.entity.AccessRights;
-import com.nekres.rm.entity.AccessRightsID;
 import com.nekres.rm.entity.UserFile;
 import com.nekres.rm.entity.UserProfile;
 import com.nekres.rm.entity.UserStorage;
@@ -47,7 +46,7 @@ public class AppConfiguration {
         properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
 
         factoryBean.setHibernateProperties(properties);
-        factoryBean.setAnnotatedClasses(UserProfile.class, UserStorage.class, UserFile.class, AccessRights.class, AccessRightsID.class);
+        factoryBean.setAnnotatedClasses(AccessRights.class,UserProfile.class, UserStorage.class, UserFile.class);
         return factoryBean;
     }
 

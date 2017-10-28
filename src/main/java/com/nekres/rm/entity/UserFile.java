@@ -6,6 +6,7 @@
 package com.nekres.rm.entity;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
 
@@ -24,11 +25,12 @@ public class UserFile {
     private String name;
     @Column(name = "path")
     private String path;
-    @Column(name = "file_owner")
-    private UserStorage fileOwner;
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "pk.user_file", cascade = CascadeType.ALL)
-    private Set<UserStorage> readAccess = new HashSet<UserStorage>(0);
-    private Set<UserStorage> writeAccess = new HashSet<UserStorage>(0);
+    @Column(name = "previous_version")
+    private UserFile previousVersion;
+   // @Column(name = "file_owner")
+  //  private UserStorage fileOwner;
+    @OneToMany(mappedBy = "userFile")
+    private Set<AccessRights> storages = new HashSet<AccessRights>(0);
 
     public int getUserFileId() {
         return userFileId;
@@ -54,13 +56,60 @@ public class UserFile {
         this.path = path;
     }
 
-    public Set<UserStorage> getReadAccess() {
-        return readAccess;
+    public Set<AccessRights> getStorages() {
+        return storages;
     }
 
-    public void setReadAccess(Set<UserStorage> readAccess) {
-        this.readAccess = readAccess;
+    public void setStorages(Set<AccessRights> storages) {
+        this.storages = storages;
     }
+
+    public UserFile getPreviousVersion() {
+        return previousVersion;
+    }
+
+    public void setPreviousVersion(UserFile previousVersion) {
+        this.previousVersion = previousVersion;
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + this.userFileId;
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.path);
+        hash = 53 * hash + Objects.hashCode(this.storages);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserFile other = (UserFile) obj;
+        if (this.userFileId != other.userFileId) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.path, other.path)) {
+            return false;
+        }
+        if (!Objects.equals(this.storages, other.storages)) {
+            return false;
+        }
+        return true;
+    }
+
+    
     
     
 }
