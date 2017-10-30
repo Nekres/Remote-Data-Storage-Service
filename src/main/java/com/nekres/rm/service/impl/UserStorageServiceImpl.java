@@ -141,12 +141,13 @@ public class UserStorageServiceImpl implements UserStorageService{
     }
     private void replaceFileVersion(String filepath, String filename, String key){
         PathBuilder builder = new PathBuilder();
-        builder.appendDirectory(key).appendDirectory(VERSIONS).appendDirectory(filename);
+        builder.appendDirectory(ROOT).appendDirectory(key).appendDirectory(VERSIONS).appendDirectory(filename);
         String targetDirectory = builder.toString();
         File targetDir = new File(targetDirectory);
         if(!targetDir.exists())
-            targetDir.mkdir();
-        move(filepath,Long.toBinaryString(new Date().getTime()), new PathBuilder().appendDirectory(VERSIONS).
+            targetDir.mkdirs();
+        move(filepath,Long.toString(new Date().getTime()), new PathBuilder().
+                appendDirectory(VERSIONS).
                 appendDirectory(filename).toString(), key);
     }
     private boolean isSame(String existingFile, MultipartFile actualFile) throws IOException{
@@ -209,18 +210,13 @@ public class UserStorageServiceImpl implements UserStorageService{
         }
     }
     @Override
-    public boolean remove(String file, String key) {
+    public void remove(String file, String key) {
         if(!userProfileService.isKeyExist(key))
             throw new NoSuchStorageException("No storage with key " + key);
         File f= new File(getPath(file, key));
         if(!f.exists())
             throw new NoSuchFileException("No such file");
-        try {
-            move(f.getCanonicalPath(), f.getName(), TRASH, key);
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-        return f.delete();
+            move(file, f.getName(), TRASH, key);
     }
 
     @Override
@@ -228,10 +224,19 @@ public class UserStorageServiceImpl implements UserStorageService{
         File fileToRestore = new File(getPath(file, key));
         if(!fileToRestore.exists())
             throw new NoSuchFileException("No such file.");
-        File f = getLatestVersion(fileToRestore.getName(), key);
+        String filename = fileToRestore.getName();
+        File f = getLatestVersion(filename, key);
+        logger.info(f.getAbsolutePath());
         fileToRestore.delete();
-       // move(f.getPath(), file, VERSIONS, key);
-        return false; //fileToRestore.delete() && 
+        PathBuilder builder = new PathBuilder().appendDirectory(VERSIONS).appendDirectory(filename).appendDirectory(f.getName());
+            move(builder.toString(), filename, "", key);
+        return true; 
+    }
+    @Override
+    public void restoreFromTrash(String file, String key){
+        PathBuilder builder = new PathBuilder();
+        builder.appendDirectory(TRASH).appendDirectory(file);
+        move(builder.toString(), file, "", key);
     }
     
     private final File getLatestVersion(String filename, String key){
@@ -262,9 +267,6 @@ public class UserStorageServiceImpl implements UserStorageService{
         accessRights.setUserStorage(storage);
         accessRights.setRead(1);
         accessRights.setWrite(1);
-        logger.info("FUCK YOU FUCK YOU FUCK YOU");
-       // userStorageDao.saveDetached(storage);
-        logger.info("\n HHHHHH" + storage.toString());
         accessRightsDao.save(accessRights);
     }
 

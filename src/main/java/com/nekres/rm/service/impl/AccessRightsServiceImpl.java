@@ -29,5 +29,10 @@ public class AccessRightsServiceImpl implements AccessRightsService{
     public void update(AccessRights accessRights) {
         accessRightsDao.update(accessRights);
     }
+
+    @Override
+    public void setRW(int read, int write) {
+        
+    }
     
 }

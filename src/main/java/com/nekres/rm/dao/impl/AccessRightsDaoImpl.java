@@ -26,7 +26,6 @@ public class AccessRightsDaoImpl implements AccessRightsDao{
     public void setSession(SessionFactory session) {
         this.sessionFactory = session;
     }
-    @Transactional
     @Override
     public void save(AccessRights accessRights) {
         Session session = sessionFactory.getCurrentSession();

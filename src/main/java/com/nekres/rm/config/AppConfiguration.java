@@ -26,8 +26,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * @author nekres
  */
 @Configuration
-@EnableWebMvc
 @EnableTransactionManagement
+@EnableWebMvc
 @PropertySource("classpath:database.properties")
 @ComponentScan(basePackages = {"com.nekres.rm"})
 public class AppConfiguration {
@@ -67,11 +67,10 @@ public class AppConfiguration {
         transactionManager.setSessionFactory(getSessionFactory().getObject());
         return transactionManager;
     }
-    @Bean
-    public CommonsMultipartResolver multipartResolver(){
+       @Bean
+        public CommonsMultipartResolver multipartResolver(){
         CommonsMultipartResolver cmr = new CommonsMultipartResolver();
-       // cmr.setMaxUploadSize(MAX_FILE_SIZE * 10);
-      //  cmr.setMaxUploadSizePerFile(MAX_FILE_SIZE);
         return cmr;
     }
+  
 }

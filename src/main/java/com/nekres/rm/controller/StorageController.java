@@ -67,16 +67,18 @@ public class StorageController {
     }
     @RequestMapping(path = "/remove", method = RequestMethod.GET)
     public ResponseEntity remove(@RequestParam String file, @RequestParam String key) {
-        boolean result = userStorageService.remove(file, key);
-        if (result) {
+        userStorageService.remove(file, key);
             return ResponseEntity.ok(new Response<String>("File " + file + " successfully removed.", "success"));
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<String>("File can't be removed", "error"));
-        }
     }
-    @RequestMapping(path = "/restore", method = RequestMethod.GET)
+    @RequestMapping(path = "/restore_version", method = RequestMethod.GET)
     public ResponseEntity restore(@RequestParam String file, @RequestParam String key){
-        return null;
+        userStorageService.restore(file, key);
+        return ResponseEntity.ok(new Response<String>("File successfully restored","success"));
+    }
+    @RequestMapping(path = "/restore_deleted", method = RequestMethod.GET)
+    public ResponseEntity restoreFromTrash(@RequestParam String file, @RequestParam String key){
+        userStorageService.restoreFromTrash(file, key);
+        return ResponseEntity.ok(new Response<String>("File successfully restored","success"));
     }
     @ExceptionHandler
     @ResponseBody

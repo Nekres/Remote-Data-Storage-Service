@@ -39,9 +39,10 @@ public interface UserStorageService {
     
     void move(String sourceFile, String sourceDir, String destinationFolder, String key);
     
-    boolean remove(String file, String key);
+    void remove(String file, String key);
     
     Tuple search(String file, String key);
     
     boolean restore(String file, String key);
+    void restoreFromTrash(String file, String key);
 }

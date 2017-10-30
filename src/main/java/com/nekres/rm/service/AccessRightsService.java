@@ -16,4 +16,5 @@ import org.springframework.stereotype.Service;
 public interface AccessRightsService {
     void save(AccessRights accessRights);
     void update(AccessRights accessRights);
+    void setRW(int read, int write);
 }
