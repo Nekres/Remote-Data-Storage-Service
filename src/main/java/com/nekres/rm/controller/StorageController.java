@@ -52,6 +52,7 @@ public class StorageController {
         if(file.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<String>("No file selected", "error"));
         }
+        logger.info("Filename is: " + file.getName());
         userStorageService.uploadFile(file, key, targetDir);
         return ResponseEntity.ok(new Response<String>("File uploaded.","success"));
     }

@@ -102,8 +102,6 @@ public class UserProfileDaoImpl implements UserProfileDao {
         }catch(NoResultException nre){
             throw new NoSuchStorageException();
         }
-        logger.info("ASLDKJASLDKJALS");
-        logger.info(Integer.toBinaryString(userProfile.getStorage().getStorageId()));
         return userProfile.getStorage().getStorageId();
     }
 
